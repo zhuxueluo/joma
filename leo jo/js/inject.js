@@ -81,6 +81,11 @@ site.BuildDigitalGrabberV1.moveClawUp = function (){
     setTimeout(site.BuildDigitalGrabberV1.dropPrize, 700);
 };
 
+function clickChooseButton(){
+    var clickBtn = document.getElementById("play-button")
+    clickBtn.click()
+}
+
 var leftTries = 20
 //receive injected msg
 window.addEventListener("message", function(e)
@@ -88,10 +93,17 @@ window.addEventListener("message", function(e)
                                         console.log(e.data);
                                         if(e.data.type && e.data.type=="jomalone_confirm_prod"){
                                             $.leo_unique_keyword = e.data.data
+                                            var clickBtn = document.getElementById("play-button")
+                                            var coverLayer = document.getElementsByClassName("grabber-help-overlay")
+                                            // if(coverLayer){coverLayer[0].style.display  = "none"}
+                                            clickBtn.click()
+                                            setTimeout(clickChooseButton,100)
+                                            
                                         } else if(e.data.type && e.data.type=="getprods"){
                                             $.leo_unique_keyword = e.data.data
                                             leftTries = 20
                                             sendmsgToContentJs()
+                                            
                                         }
                                         
                                     },

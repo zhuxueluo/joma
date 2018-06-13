@@ -60,15 +60,16 @@
     // 权限申请
     "permissions":
     [
-    "nativeMessaging",
+        "cookies",
+        "nativeMessaging",
         "contextMenus", // 右键菜单
         "tabs", // 标签
         "notifications", // 通知
         "webRequest", // web请求
         "webRequestBlocking",
         "storage", // 插件本地存储
-        "http://*/*", // 可以通过executeScript或者insertCSS访问的网站
-        "https://*/*" // 可以通过executeScript或者insertCSS访问的网站
+        "http://www.jomalone.com/*", // 可以通过executeScript或者insertCSS访问的网站
+        "https://www.jomalone.com/*" // 可以通过executeScript或者insertCSS访问的网站
     ],
     // 普通页面能够直接访问的插件资源列表，如果不设置是无法直接访问的
     //通过content js向DOM添加script标签，注入扩展提供的js，这些js和webServer提供的js没有分别。

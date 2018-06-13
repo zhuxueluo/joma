@@ -59,7 +59,11 @@ function sendConfm(){
             break
         }
     }
-    sendConfirmToContent(prodName)
+    if(prodName){
+        sendConfirmToContent(prodName)
+    } else {
+        alert("please choose a prize")
+    }
 }
 function sendConfirmToContent(prodName){
     var message = {"type":"jomalone_confirm_prod","data":prodName}
@@ -71,7 +75,26 @@ function sendConfirmToContent(prodName){
         });
     });
 }
-
+function clearCookies(){
+    var arg1OfGetAll = {url:"https://www.jomalone.com/"}
+    var cookieNames = []
+    function callbackOfGetAll(cookieArray)
+    {
+        for(var i= 0; i < cookieArray.length; i++)
+        {
+            cookieNames.push(cookieArray[i].name)
+        }
+        
+        
+        for(var i=0; i< cookieNames.length; i++){
+            chrome.cookies.remove({"name":cookieNames[i],url:"https://www.jomalone.com/"},function(removedCookie){console.log(removedCookie)})
+        }
+    }
+    chrome.cookies.getAll(arg1OfGetAll,callbackOfGetAll)
+    var hint = document.getElementById("hintofclear")
+    hint.textContent = "Cleared!"
+}
+document.getElementById("clearcookies").onclick = clearCookies
 //-------------------------------real function
 // 监听来自content-script的消息
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
@@ -82,25 +105,34 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
     console.log("sendresponse function= "+sendResponse);
     sendResponse('im bg-js, got your msg：' + JSON.stringify(request));
     if(request.msgtype && request.msgtype=="jomalone_products"){
-        for(var i=0; i< request.data.length; i++){
-            var temp = document.createElement('input');
-            temp.setAttribute('type', 'radio');
-            temp.setAttribute('name', "prdname")
-            temp.setAttribute('id', 'popupid'+i);
-            temp.setAttribute('seq', i)
-            temp.setAttribute('prodname', request.data[i].product_name)
-            var plabel = document.createElement('label');
-            plabel.textContent=request.data[i].product_name
-            plabel.setAttribute('for', 'popupid'+i)
-            var br = document.createElement('br');
-            document.getElementById('inputdiv').appendChild(temp);
-            document.getElementById('inputdiv').appendChild(plabel);
-            document.getElementById('inputdiv').appendChild(br);
+        if(request.data.length>0){
+            document.getElementById('inputdiv').innerHTML = ""
+            for(var i=0; i< request.data.length; i++){
+                var temp = document.createElement('input');
+                temp.setAttribute('type', 'radio');
+                temp.setAttribute('name', "prdname")
+                temp.setAttribute('id', 'popupid'+i);
+                temp.setAttribute('seq', i)
+                temp.setAttribute('prodname', request.data[i].product_name)
+                var plabel = document.createElement('label');
+                plabel.textContent=request.data[i].product_name
+                plabel.setAttribute('for', 'popupid'+i)
+                var br = document.createElement('br');
+                document.getElementById('inputdiv').appendChild(temp);
+                document.getElementById('inputdiv').appendChild(plabel);
+                document.getElementById('inputdiv').appendChild(br);
+                if((i+1)%5==0){
+                    var br2 = document.createElement('br');
+                    document.getElementById('inputdiv').appendChild(br2);
+                }
+            }
+            var confm = document.createElement('input')
+            confm.setAttribute("type","submit")
+            confm.setAttribute("value","2.StartChoose")
+            confm.onclick = sendConfm
+            document.getElementById('inputdiv').appendChild(confm);
         }
-        var confm = document.createElement('input')
-        confm.setAttribute("type","submit")
-        confm.onclick = sendConfm
-        document.getElementById('inputdiv').appendChild(confm);
+        
     }
 });
 
