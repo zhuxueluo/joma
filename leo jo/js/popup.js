@@ -137,6 +137,25 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
 });
 
 
+function scanNewPrizeCallBack(response){
+    console.log("this is scanNewPrizeCallBack:"+response)
+}
+
+function scanNewPrizeFunc(e){
+    var message = {"type":"scanNewPrize","data":""}
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs)
+    {
+        chrome.tabs.sendMessage(tabs[0].id, message, function(response)
+        {
+            if(scanNewPrizeCallBack) scanNewPrizeCallBack(response);
+        });
+    });
+}
+
+var scanNewPrizeBtn = document.getElementById("scanNewPrize")
+scanNewPrizeBtn.onclick = scanNewPrizeFunc
+
+
 function getprodsFunction(e){
     var message = {"type":"getprods","data":""}
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs)
@@ -147,6 +166,5 @@ function getprodsFunction(e){
         });
     });
 }
-
 var getprodsBtn = document.getElementById("getprods")
 getprodsBtn.onclick = getprodsFunction

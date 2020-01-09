@@ -104,6 +104,10 @@ window.addEventListener("message", function(e)
                                             leftTries = 20
                                             sendmsgToContentJs()
                                             
+                                        } else if(e.data.type && e.data.type=="scanNewPrize"){
+                                            doRefresh();
+                                            
+                                            
                                         }
                                         
                                     },
@@ -111,6 +115,27 @@ window.addEventListener("message", function(e)
  
 
 
+function doRefresh(){
+    window.postMessage({msgtype: 'pagerefreshed',data: ''},"*");
+    console.log({msgtype: 'pagerefreshed',data: ''})
+    location.reload();
+    // setTimeout(checkNewPrize,300,oldPrize)
+    setTimeout(findSpecPrize,300, positiveKeywords, negtiveKeywords)
+    
+}
+function checkNewPrize(oldPrize){
+//TODO
+}
+function findSpecPrize(positiveKeywords, negtiveKeywords){
+    var isFound = false;
+    for(var i=0; i< site.BuildDigitalGrabberV1.products.length; i++){
+        if(checkOnePrize(site.BuildDigitalGrabberV1.products[i],positiveKeywords, negtiveKeywords)){
+            isFound = true;
+        }
+    }
+    
+    return isFound
+}
 function sendmsgToContentJs(){
     if(site && site.BuildDigitalGrabberV1 && site.BuildDigitalGrabberV1.products.length > 0 )
     {
